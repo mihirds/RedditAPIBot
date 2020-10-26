@@ -1,0 +1,58 @@
+import praw
+import os
+import re
+import time
+
+
+
+# info necessary to access the reddit API. Follow Reddit Guidelines
+# (might change)
+reddit = praw.Reddit(
+    user_agent="Comment Extraction (by u/bot1)",
+    client_id="Client_ID",
+    client_secret="Client_Secret_ID",
+    username="Username",
+    password="Password"
+)
+
+if not os.path.isfile("posts_replied_to.txt"):
+    posts_replied_to = []
+
+else:
+    with open("posts_replied_to.txt", "r") as f:    # format is open(file, mode) "r" means read only.
+        # with command helps to open the file, debugs and closes the file after you are done
+
+        posts_replied_to = f.read() # reads the text file
+        posts_replied_to = posts_replied_to.split("\n") # after each word it give it a new line
+        posts_replied_to = list(filter(None, posts_replied_to))
+    
+subreddit = reddit.subreddit("pythonforengineers")
+for submission in subreddit.hot(limit=10):
+    if submission.id not in posts_replied_to:
+
+
+        if re.search("i love python", submission.title, re.IGNORECASE):    # searching this
+
+
+            submission.reply("It's ALIVE, MARTY IS ALIVE")    # our reply
+            time.sleep(5)
+            print("IJHBIJHBIOJHBIOIJHBOJBHIKHBIKIKHKIINKKNLLKNKLKKL----------------\n")
+            print("Replying to: ", submission.title)
+
+            posts_replied_to.append(submission.id)   # adding to our txt file
+
+
+
+with open("posts_replied_to.txt", "w") as f:    # now our text file will be in write mode
+    for post_id in posts_replied_to:            
+        f.write(post_id + "\n")
+
+
+
+subreddit = reddit.subreddit("learnpython") # This is the subreddit that we will look at 
+for submission in subreddit.hot(limit=5):   # wil only look at the 5 top posts within the subreddit
+    print(dir(submission))   # lists all the attributes of submission (function, modules,strings, lists, dicts)
+    print("Title:", submission.title)  # self explanatory
+    print("Text:", submission.selftext) # self explanatory
+    print("Score:", submission.score) # score is total upvotes and downvotes
+    print("---------------------------------------------------------\n") # so each iteration is not smushed together
